@@ -1,0 +1,113 @@
+<template>
+    <div>
+        <form method="post">
+            <h4 class="form__title">Create book</h4>
+
+            <div class="form-group">
+                <input type="text" v-model="name_of_book" class="form-control" placeholder="Name of book">
+            </div>
+
+            <div class="form-group">
+                <input type="text" v-model="isbn" class="form-control" placeholder="ISBN">
+            </div>
+
+            <div class="form-group">
+                <input type="text" v-model="date" class="form-control" placeholder="Date: YYYY-MM-DD">
+            </div>
+
+            <div class="form-group">
+                <input type="text" v-model="first_name" class="form-control" placeholder="Firstname of Author">
+            </div>
+
+            <div class="form-group">
+                <input type="text" v-model="last_name" class="form-control" placeholder="Lastname of Author">
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="button" @click="createNewBook()">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</template>
+
+<script>
+import axios from "axios";
+let baseURL = "http://localhost:1337/api/";
+
+export default {
+    name: 'CreateBook',
+    data() {
+        return {
+            name_of_book: "",
+            isbn: "",
+            first_name: "",
+            last_name: "",
+            date: "",
+        }
+    },
+    methods: {
+        createNewBook() {
+            axios({
+                method: "POST",
+                url: `${baseURL}book/`,
+                data: {
+                    "name": this.name_of_book,
+                    "isbn": this.isbn,
+                    "author": {
+                        "first_name": this.first_name,
+                        "last_name": this.last_name
+                    },
+                    "date":  this.date,
+                },
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(() => {
+                    this.name_of_book = "";
+                    this.isbn = "";
+                    this.first_name = "";
+                    this.last_name = "";
+                    this.date = "";
+                    alert("Create");
+                })
+                .catch((err) => {
+                    console.log("Erorr: ", err);
+                });
+        }
+    },
+}
+</script>
+
+<style scoped>
+form {
+    max-width: 50%;
+    margin: auto;
+    margin-top: 40px;
+}
+
+h4.form__title {
+    margin-bottom: 20px;
+}
+
+form input.form-control {
+    margin-bottom: 20px;
+    height: 40px;
+    border-radius: 4px;
+}
+
+form button.btn {
+    padding: 12px 40px;
+    width: 100%;
+    background-color: #525252;
+    font-size: 13px;
+}
+
+@media screen and (max-width: 489px) {
+    form {
+        max-width: 100%;
+    }
+}
+</style>
